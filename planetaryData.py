@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt  # Import Matplotlib
+import matplotlib.pyplot as plt
+import seaborn as sns  # Import Seaborn
 from bloom_filter import BloomFilter
 
 # Creating a planetary database
@@ -10,7 +11,7 @@ data = {
     "Has Atmosphere": [True, True, True, True, False, True]
 }
 
-df = pd.DataFrame(data)  # Convert data to a DataFrame
+df = pd.DataFrame(data)
 
 # Create a bloom filter to track visited planets
 bloom = BloomFilter(max_elements=10, error_rate=0.1)
@@ -45,10 +46,18 @@ print(f"⬇️ Lowest Gravity: {min_gravity:.2f} m/s²")
 print("📁 Data saved to unvisited_planets.csv")
 
 # ---------- Matplotlib Visualization ----------
-# Create a bar chart of unvisited planet gravities
 plt.figure(figsize=(8, 5))
 plt.bar(unvisited_planets["Planet"], gravity_values, color='skyblue')
 plt.title('Gravity of Unvisited Planets')
 plt.xlabel('Planet')
 plt.ylabel('Gravity (m/s²)')
+plt.show()
+
+# ---------- Seaborn Visualization ----------
+# Create a scatter plot to show the relationship between gravity and atmosphere presence
+plt.figure(figsize=(8, 5))
+sns.scatterplot(x="Gravity (m/s²)", y="Has Atmosphere", data=unvisited_planets, hue="Has Atmosphere", palette="viridis")
+plt.title('Gravity vs Atmosphere Presence for Unvisited Planets')
+plt.xlabel('Gravity (m/s²)')
+plt.ylabel('Has Atmosphere')
 plt.show()  # Display the plot
