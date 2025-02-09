@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from bloom_filter import BloomFilter
 
 # Creating a planetary database
@@ -21,9 +22,24 @@ for planet in visited_planets:
 # Filter out planets that are in the bloom filter (already visited)
 unvisited_planets = df[~df["Planet"].apply(lambda p: p in bloom)]
 
-# Save unvisted planets to a csv file
+# Save unvisited planets to a CSV file
 unvisited_planets.to_csv("unvisited_planets.csv", index=False)
 
-print("Planets you haven't visited yet: ")
+# ---------- NumPy Analysis ----------
+# Convert gravity column to a NumPy array
+gravity_values = np.array(unvisited_planets["Gravity (m/s²)"])
+
+# Calculate statistics
+average_gravity = np.mean(gravity_values)  # Average gravity of unvisited planets
+max_gravity = np.max(gravity_values)  # Planet with highest gravity
+min_gravity = np.min(gravity_values)  # Planet with lowest gravity
+
+# Display results
+print("🌍 Planets you haven't visited yet:")
 print(unvisited_planets)
-print("Data saved to unvisited_planets.csv")
+print("\n📊 NumPy Analysis of Unvisited Planets:")
+print(f"🔢 Average Gravity: {average_gravity:.2f} m/s²")
+print(f"⬆️ Highest Gravity: {max_gravity:.2f} m/s²")
+print(f"⬇️ Lowest Gravity: {min_gravity:.2f} m/s²")
+
+print("📁 Data saved to unvisited_planets.csv")
