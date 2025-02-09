@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt  # Import Matplotlib
 from bloom_filter import BloomFilter
 
 # Creating a planetary database
@@ -26,13 +27,12 @@ unvisited_planets = df[~df["Planet"].apply(lambda p: p in bloom)]
 unvisited_planets.to_csv("unvisited_planets.csv", index=False)
 
 # ---------- NumPy Analysis ----------
-# Convert gravity column to a NumPy array
 gravity_values = np.array(unvisited_planets["Gravity (m/s²)"])
 
 # Calculate statistics
-average_gravity = np.mean(gravity_values)  # Average gravity of unvisited planets
-max_gravity = np.max(gravity_values)  # Planet with highest gravity
-min_gravity = np.min(gravity_values)  # Planet with lowest gravity
+average_gravity = np.mean(gravity_values)
+max_gravity = np.max(gravity_values)
+min_gravity = np.min(gravity_values)
 
 # Display results
 print("🌍 Planets you haven't visited yet:")
@@ -43,3 +43,12 @@ print(f"⬆️ Highest Gravity: {max_gravity:.2f} m/s²")
 print(f"⬇️ Lowest Gravity: {min_gravity:.2f} m/s²")
 
 print("📁 Data saved to unvisited_planets.csv")
+
+# ---------- Matplotlib Visualization ----------
+# Create a bar chart of unvisited planet gravities
+plt.figure(figsize=(8, 5))
+plt.bar(unvisited_planets["Planet"], gravity_values, color='skyblue')
+plt.title('Gravity of Unvisited Planets')
+plt.xlabel('Planet')
+plt.ylabel('Gravity (m/s²)')
+plt.show()  # Display the plot
