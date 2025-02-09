@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns  # Import Seaborn
+import seaborn as sns
+from scipy import optimize  # Import SciPy optimization module
 from bloom_filter import BloomFilter
 
 # Creating a planetary database
@@ -27,37 +28,35 @@ unvisited_planets = df[~df["Planet"].apply(lambda p: p in bloom)]
 # Save unvisited planets to a CSV file
 unvisited_planets.to_csv("unvisited_planets.csv", index=False)
 
-# ---------- NumPy Analysis ----------
-gravity_values = np.array(unvisited_planets["Gravity (m/s²)"])
+# ---------- SciPy Optimization ----------
+# Find the planet with the best gravity using SciPy's optimization
 
-# Calculate statistics
-average_gravity = np.mean(gravity_values)
-max_gravity = np.max(gravity_values)
-min_gravity = np.min(gravity_values)
+# The function to minimize (we want to maximize gravity, so we minimize the negative gravity)
+def gravity_function(planet_name):
+    planet_data = df[df['Planet'] == planet_name]
+    return -planet_data['Gravity (m/s²)'].values[1]  # Negative because we want to maximize gravity
 
-# Display results
-print("🌍 Planets you haven't visited yet:")
-print(unvisited_planets)
-print("\n📊 NumPy Analysis of Unvisited Planets:")
-print(f"🔢 Average Gravity: {average_gravity:.2f} m/s²")
-print(f"⬆️ Highest Gravity: {max_gravity:.2f} m/s²")
-print(f"⬇️ Lowest Gravity: {min_gravity:.2f} m/s²")
+# Use SciPy to find the planet with the best gravity
+best_planet = optimize.fminbound(gravity_function, 0, len(df)-1)
 
-print("📁 Data saved to unvisited_planets.csv")
+# Get the name of the best planet (using the index)
+best_planet_name = df.iloc[int(best_planet)]['Planet']
+best_gravity = df.iloc[int(best_planet)]['Gravity (m/s²)']
+
+print(f"🚀 The best planet for building a space station is {best_planet_name} with gravity {best_gravity} m/s²!")
 
 # ---------- Matplotlib Visualization ----------
 plt.figure(figsize=(8, 5))
-plt.bar(unvisited_planets["Planet"], gravity_values, color='skyblue')
+plt.bar(unvisited_planets["Planet"], np.array(unvisited_planets["Gravity (m/s²)"]), color='skyblue')
 plt.title('Gravity of Unvisited Planets')
 plt.xlabel('Planet')
 plt.ylabel('Gravity (m/s²)')
 plt.show()
 
 # ---------- Seaborn Visualization ----------
-# Create a scatter plot to show the relationship between gravity and atmosphere presence
 plt.figure(figsize=(8, 5))
 sns.scatterplot(x="Gravity (m/s²)", y="Has Atmosphere", data=unvisited_planets, hue="Has Atmosphere", palette="viridis")
 plt.title('Gravity vs Atmosphere Presence for Unvisited Planets')
 plt.xlabel('Gravity (m/s²)')
 plt.ylabel('Has Atmosphere')
-plt.show()  # Display the plot
+plt.show()
