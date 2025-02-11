@@ -1,5 +1,5 @@
 Planet,Gravity (m/s²),Has Atmosphere
-Jupiter,24.79,True
-Saturn,10.44,True
-Mercury,3.7,False
-Neptune,11.15,True
+Jupiter,24.79,1
+Saturn,10.44,1
+Mercury,3.7,0
+Neptune,11.15,1
